@@ -1,0 +1,9 @@
+requires 'Config::IniFiles';
+requires 'Plack';
+requires 'Plack::Request';
+requires 'Router::Simple';
+requires 'HTTP::Exception';
+requires 'JSON::XS';
+requires 'Text::Xslate';
+requires 'DBD::Pg';
+requires 'Starman';

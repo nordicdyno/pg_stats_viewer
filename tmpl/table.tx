@@ -1,0 +1,89 @@
+<form method="GET" action="/" class="form-inline">
+  Filter by user:
+  <select name="userid">
+    <option value=""></option>
+:   for $users -> $user {
+      <option value="<: $user.oid :>" <: $params.userid == $user.oid ? "selected" : "" :>><:= $user.rolname :></option>
+: }
+  </select>
+  and by db:
+  <select name="dbid">
+    <option value=""></option>
+:   for $dbs -> $db {
+      <option value="<: $db.oid :>" <: $params.dbid == $db.oid ? "selected" : "" :>><: $db.datname :></option>
+:   }
+  </select>
+
+  <input type="submit" name="submit" class="btn">
+</form>
+
+<div id="paginate_enabled_next"></div>
+<table id="example">
+<thead>
+</thead>
+<tbody></tbody>
+<tfoot>
+</tfoot>
+</table>
+
+<script type="text/javascript" charset="utf-8">
+var oTable;
+function fnFormatDetails ( nTr ) {
+    var aData = oTable.fnGetData(nTr);
+    var sOut = '';
+    sOut += '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;" width="100%">';
+    sOut += '<tr><td>Query:</td><td>' + aData.query + '</td></tr>';
+    sOut += '</table>';
+
+    return sOut;
+}
+
+var queryRenderFn = function(data, type, full) {
+    var ret = data;
+    if (data.length > 500) {
+        ret = data.substr(0, 500) + " <b>...</b>";
+    }
+    return ret;
+}
+
+$(document).ready(function() {
+    console.log("start");
+    var aoColumns = <: $aoColumnsJSON | raw :>;
+    for (var key in aoColumns) {
+        var obj = aoColumns[key];
+        if (obj['mRender']) {
+            obj['mRender'] = eval(obj['mRender']);
+        }
+    }
+
+    oTable = $('#example').dataTable( {
+        "bProcessing": true,
+        "bServerSide": true,
+        "sAjaxSource": "<: $db_url :>stat.json<: $filter :>",
+        // "sAjaxDataProp": "aaData",
+        "sScrollX": '100%',
+        "bScrollCollapse": true,
+        // "bDestroy": true,
+        //"aoColumnsDefs": [ { "bSortable": false, "aTargets": [ 0 ] }, ],
+        "aaSorting": [
+            ['5', /* total_time */ 'desc'] // default sorting
+        ],
+        "aoColumns": aoColumns,
+        "sPaginationType": "full_numbers",
+        "sDom": '<"top"lpf>rt<"bottom"lp><"clear">'
+    });
+
+    $('#example tbody td img').live( 'click', function () {
+        var nTr = $(this).parents('tr')[0];
+        if ( oTable.fnIsOpen(nTr) ) {
+            this.src = "/images/details_open.png";
+            oTable.fnClose( nTr );
+        }
+        else {
+            this.src = "/images/details_close.png";
+            oTable.fnOpen( nTr, fnFormatDetails(nTr), 'details' );
+        }
+    } );
+});
+</script>
+
