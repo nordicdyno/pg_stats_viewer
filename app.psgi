@@ -67,7 +67,7 @@ return builder {
     enable 'Static',
         path => qr{^/(favicon.ico|(images|js|css|favicon)/)}, root => './static/'
     ;
-    # enable "HTTPExceptions", rethrow => 1;
+    enable "HTTPExceptions", rethrow => 1;
     # enable 'Debug', panels => [ qw(Environment Response Memory Timer) ];
     # enable 'StackTrace'; # <-- added automatically by Dev environment
     # enable 'BetterStackTrace';

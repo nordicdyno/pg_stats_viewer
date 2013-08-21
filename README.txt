@@ -9,7 +9,7 @@ Prepare Perl tools:
 
 Install deps:
     > cd <app_dir>
-    > carton
+    > carton install
 
 Run with plackup:
     > carton exec plackup --port 9000 -E deployment
