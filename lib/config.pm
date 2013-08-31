@@ -13,13 +13,14 @@ our @EXPORT_OK = qw($Config $ConfigH);
 my $Dir = 'conf';
 sub init {
     my $type = shift;
-    my $type_ini_f = join('/', $Dir, "$type.ini");
     my $main_ini_f = join('/', $Dir, "config.ini");
     my $main_ini  = read_ini($main_ini_f);
-    #print 'main => ' . Dumper($main_ini);
     my $whole_ini = $main_ini;
-    if (-f $type_ini_f) {
-        $whole_ini = read_ini($type_ini_f, -import => $main_ini);
+    if ($type) {
+        my $type_ini_f = join('/', $Dir, "$type.ini");
+        if (-f $type_ini_f) {
+            $whole_ini = read_ini($type_ini_f, -import => $main_ini);
+        }
     }
     $Config = $whole_ini; 
     $ConfigH = $Config->{v};

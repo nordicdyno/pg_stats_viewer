@@ -2,6 +2,7 @@
 #
 use strict;
 use warnings;
+use feature 'say';
 use Plack::Request;
 use Plack::Builder;
 use Router::Simple;
@@ -76,6 +77,19 @@ $builder->add_middleware('Static',
 );
 $builder->add_middleware("HTTPExceptions", rethrow => 1);
 
+# Add user defined middlewares
+my @m = $Config->GroupMembers('MIDDLEWARE');
+for my $gr_m (@m) {
+    my $midd_name = [ split(' ', $gr_m) ]->[1];
+    my $midd_cfg = $ConfigH->{$gr_m};
+    next unless $midd_cfg->{enabled};
+
+    my %midd_opt = map { $_ => parse_middleware_value($midd_cfg->{$_})}
+                   grep { $_ ne 'enabled' }
+                   keys %$midd_cfg;
+    $builder->add_middleware($midd_name, %midd_opt);
+}
+
 # Extra middlewares
 # Auth & sessions
 OAUTH_INIT: { 
@@ -98,14 +112,11 @@ OAUTH_INIT: {
 
 return $builder->wrap($app);
 
-# enable 'Debug', panels => [ qw(Environment Response Memory Timer) ];
-# enable 'StackTrace'; # <-- added automatically by Dev environment
-# enable 'BetterStackTrace';
-# enable 'REPL';
-# Plack::Middleware::Delay
-# HTML::Mason::PSGIHandler
-# ? Plack::App::Cascade 
-# ? Plack::Middleware::Throttle
-
-##############################################################
-##############################################################
+sub parse_middleware_value {
+    my $val = shift;
+    if ($val =~ /^\[(.*)\]$/) {
+        my @array = map { s/\s+//g; $_ } split(', ', $1);
+        $val = \@array;
+    }
+    return $val;
+}

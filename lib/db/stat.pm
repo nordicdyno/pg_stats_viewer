@@ -6,31 +6,38 @@ use utf8;
 use HTTP::Exception;
 use Data::Dumper;
 use db;
-use config qw($Config);
+use config qw($Config $ConfigH);
 
 my %db_poll; 
 my @db_links;
 
-for my $gm ($Config->GroupMembers('db')) {
-    my @parts = split(/\s+/, $gm);
-    my $db_name = $parts[1];
-    push @db_links, $db_name;
+sub init {
+    for my $gm ($Config->GroupMembers('db')) {
+    print "Group member $gm\n";
+        my @parts = split(/\s+/, $gm);
+        my $db_name = $parts[1];
+        push @db_links, $db_name;
 
-    my $db_conf = $Config->{'v'}{$gm};
-    my $exception_cb = sub { 
-        HTTP::Exception->throw(500, status_message => "'$db_name' DB error") 
-    };
-    $db_poll{$db_name} = db->new(
-        %{ $db_conf },
-        db_name      => $db_name,
-        exception_cb => $exception_cb,
-    );
+        #my $db_conf = $Config->{'v'}{$gm};
+        #print Dumper([ $db_conf, $ConfigH ]);
+        my $db_conf = $ConfigH->{$gm};
+        #print Dumper([ $db_conf ]); 
+        my $exception_cb = sub { 
+            HTTP::Exception->throw(500, status_message => "'$db_name' DB error") 
+        };
+        $db_poll{$db_name} = db->new(
+            %{ $db_conf },
+            db_name      => $db_name,
+            exception_cb => $exception_cb,
+        );
+    }
 }
 
 my %obj_poll;
 sub new {
     my $class = shift;
     my $db_name = shift;
+    init() unless keys %db_poll;
     my $obj = $obj_poll{$db_name} // bless { db => $db_poll{$db_name} }, $class;
     return $obj;
 }
