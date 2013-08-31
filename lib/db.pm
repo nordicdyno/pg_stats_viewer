@@ -25,7 +25,7 @@ sub connect_db {
         port => $self->{port},
     );
 
-    my $dbh = DBI->connect_cached($dsn, $user, $passwd, {
+    my $dbh = DBI->connect($dsn, $user, $passwd, {
             RaiseError => 1,
             PrintError => 0,
             pg_enable_utf8    => 1,

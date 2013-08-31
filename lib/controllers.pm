@@ -53,7 +53,7 @@ sub setup_ao_columns {
 
 sub index {
     my $pkg = shift;
-    my ($req, $route) = @_;
+    my ($req, $route, $session) = @_;
     my $params = $req->parameters->mixed;
 
     my $filter = '';
@@ -63,6 +63,7 @@ sub index {
     my $db_name = $route->{db_name}; 
     my $db_stat = db::stat->new($db_name);
     
+    #print STDERR "session => " . Dumper($session);
 # Prepare data
     my $data = {
         users  => $db_stat->users(),
@@ -70,7 +71,8 @@ sub index {
         params => $params,
         fields => $db_stat->get_stats_fields(),
         filter => $filter,
-        aoColumnsJSON => encode_json(setup_ao_columns()),
+        aoColumnsJSON => JSON::XS->new->ascii->pretty->encode(setup_ao_columns()),
+        session => $session,
     };
 
     my @db_links = db::stat::db_links();
@@ -152,7 +154,7 @@ sub stat {
     return +{
         code => 200,
         type => "text/json",
-        body => JSON::XS->new->ascii->pretty->encode($data),
+        body => encode_json($data),
     };
 }
 

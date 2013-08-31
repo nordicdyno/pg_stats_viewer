@@ -6,8 +6,9 @@ use Exporter 'import';
 use Data::Dumper;
 use Config::IniFiles;
 
-our $Config = {};
-our @EXPORT_OK = qw($Config);
+our $Config  = {};
+our $ConfigH = {};
+our @EXPORT_OK = qw($Config $ConfigH);
 
 my $Dir = 'conf';
 sub init {
@@ -20,8 +21,15 @@ sub init {
     if (-f $type_ini_f) {
         $whole_ini = read_ini($type_ini_f, -import => $main_ini);
     }
-    #print 'whole => ' . Dumper($whole_ini);
     $Config = $whole_ini; 
+    $ConfigH = $Config->{v};
+=pod
+    for my $sec ($Config->Sections()) {
+        for my $p ($Config->Parameters($sec)) {
+            $ConfigH->{$sec}{$p} = $Config->val($sec, $p);
+        }
+    }
+=cut
 }
 
 sub read_ini {

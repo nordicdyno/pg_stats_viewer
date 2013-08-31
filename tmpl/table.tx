@@ -1,4 +1,8 @@
+<div class="form-horizontal">
 <form method="GET" action="/" class="form-inline">
+<button type="button" class="btn btn-default btn-sm" onclick="toggleView();">
+    <span class="glyphicon glyphicon-filterToggle">wide</span>
+</button>&nbsp;&nbsp;&nbsp;&nbsp;
   Filter by user:
   <select name="userid">
     <option value=""></option>
@@ -16,6 +20,8 @@
 
   <input type="submit" name="submit" class="btn">
 </form>
+
+</div>
 
 <div id="paginate_enabled_next"></div>
 <table id="example">
@@ -40,8 +46,8 @@ function fnFormatDetails ( nTr ) {
 
 var queryRenderFn = function(data, type, full) {
     var ret = data;
-    if (data.length > 500) {
-        ret = data.substr(0, 500) + " <b>...</b>";
+    if (data.length > 250) {
+        ret = data.substr(0, 250) + " <b>...</b>";
     }
     return ret;
 }
@@ -56,12 +62,31 @@ $(document).ready(function() {
         }
     }
 
+    var imgClicks = function() {
+        var imgs = $('#example tbody tr td img')
+        //console.log(imgs)
+        imgs.on('click', function(event){
+            //console.log("on click");
+            var nTr = $(this).parents('tr')[0];
+            if ( oTable.fnIsOpen(nTr) ) {
+                this.src = "/images/details_open.png";
+                oTable.fnClose( nTr );
+            }
+            else {
+                this.src = "/images/details_close.png";
+                oTable.fnOpen( nTr, fnFormatDetails(nTr), 'details' );
+            }
+        } );
+    };
+
     oTable = $('#example').dataTable( {
+        "fnDrawCallback": imgClicks,
         "bProcessing": true,
         "bServerSide": true,
         "sAjaxSource": "<: $db_url :>stat.json<: $filter :>",
+        //"bAutoWidth": false,
         // "sAjaxDataProp": "aaData",
-        "sScrollX": '100%',
+        //"sScrollX": '100%',
         "bScrollCollapse": true,
         // "bDestroy": true,
         //"aoColumnsDefs": [ { "bSortable": false, "aTargets": [ 0 ] }, ],
@@ -73,17 +98,27 @@ $(document).ready(function() {
         "sDom": '<"top"lpf>rt<"bottom"lp><"clear">'
     });
 
-    $('#example tbody td img').live( 'click', function () {
-        var nTr = $(this).parents('tr')[0];
-        if ( oTable.fnIsOpen(nTr) ) {
-            this.src = "/images/details_open.png";
-            oTable.fnClose( nTr );
-        }
-        else {
-            this.src = "/images/details_close.png";
-            oTable.fnOpen( nTr, fnFormatDetails(nTr), 'details' );
-        }
-    } );
+    toggleView();
+
 });
+
+    function toggleView() {
+        var tail = [8,9,10,11,12,13,14,15,16,17,18];
+        fnShowHideList(tail);
+    }
+
+    function fnShowHideList(list) {
+        for (var i = 0; i < list.length; i++) {
+            fnShowHide(list[i]);
+        }
+    }
+    function fnShowHide(iCol) {
+        /* Get the DataTables object again - this is not a recreation, just a get of the object */
+        var oTable = $('#example').dataTable();
+
+        var bVis = oTable.fnSettings().aoColumns[iCol].bVisible;
+        oTable.fnSetColumnVis( iCol, bVis ? false : true );
+    }
+
 </script>
 

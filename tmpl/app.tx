@@ -3,46 +3,62 @@
   <head>
     <title>pg_web_stats</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- Bootstrap -->
-    <link href="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css" rel="stylesheet">
+    <!-- Bootstrap v3 -->
+    <!-- Bootstrap core CSS -->
+    <link href="http://getbootstrap.com/dist/css/bootstrap.css" rel="stylesheet">
+    <!-- Bootstrap theme -->
+    <link href="http://getbootstrap.com/dist/css/bootstrap-theme.min.css" rel="stylesheet">
 
-<!-- DataTables CSS -->
+<!-- DataTables CSS 
+-->
 <link rel="stylesheet" type="text/css" href="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/css/jquery.dataTables.css">
  
-<!-- jQuery -->
-<script type="text/javascript" charset="utf8" src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.8.2.min.js"></script>
- 
-<!-- DataTables -->
+<!-- jQuery 
+-->
+<script type="text/javascript" charset="utf8" src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.10.2.min.js"></script>
+<!-- DataTables 
+-->
 <script type="text/javascript" charset="utf8" src="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/jquery.dataTables.min.js"></script>
+<style>
+.container {
+  padding-left: 10px;
+  margin-left: 25px;
+}
+</style>
 
-    <style>
-      body { padding-top: 50px; }
-    .navbar-inner { height: 1em; }
-    </style>
   </head>
 
   <body>
-    <div class="navbar navbar-inverse navbar-fixed-top">
-      <div class="navbar-inner">
-        <div class="container">
-          <a class="brand" href="/">pg_stat_statements viewer</a>
-          <div class="nav-collapse collapse">
-            <ul class="nav pull-right">
-              <li class="">inspired by Evil Martians</li>
-            </ul>
-          </div>
+    <div class="navbar navbar-inverse">
+      <div class="container">
+        <div class="navbar-header">
+          <a class="navbar-brand" href="/">pg_stat_statements viewer</a>
         </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+: for $db_list -> $db {
+            <li <: $db.class | raw :>><a href="<: $db.url :>"><: $db.name :></a></li>
+: }
+          </ul>
+          <ul class="nav navbar-nav navbar-right">
+            <li><img src="<: $session.user.photo.link :>"></li>
+            <li class="dropdown">
+: if $session {
+<a href="#" class="dropdown-toggle" data-toggle="dropdown">
+    <: $session.user.name :> 
+    <b class="caret"></b></a>
+<ul class="dropdown-menu"><li><a href="/oauth2/<: $session.provider :>/exit">Logout</a></li></ul>
+: }
+            </li>
+          </ul>
+        </div><!--/.nav-collapse -->
       </div>
     </div>
 
     <div class="container">
-        <ul class="nav nav-pills">
-: for $db_list -> $db {
-            <li <: $db.class | raw :>><a href="<: $db.url :>"><: $db.name :></a></li>
-: }
-        </ul>
 : include "table.tx"
     </div>
 
+     <script src="http://getbootstrap.com/dist/js/bootstrap.min.js"></script>
   </body>
 </html>
