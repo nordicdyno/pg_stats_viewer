@@ -2,9 +2,7 @@ package db::stat;
 use strict;
 use warnings;
 use utf8;
-
 use HTTP::Exception;
-use Data::Dumper;
 use db;
 use config qw($Config $ConfigH);
 
@@ -13,15 +11,11 @@ my @db_links;
 
 sub init {
     for my $gm ($Config->GroupMembers('db')) {
-    print "Group member $gm\n";
         my @parts = split(/\s+/, $gm);
         my $db_name = $parts[1];
         push @db_links, $db_name;
 
-        #my $db_conf = $Config->{'v'}{$gm};
-        #print Dumper([ $db_conf, $ConfigH ]);
         my $db_conf = $ConfigH->{$gm};
-        #print Dumper([ $db_conf ]); 
         my $exception_cb = sub { 
             HTTP::Exception->throw(500, status_message => "'$db_name' DB error") 
         };
