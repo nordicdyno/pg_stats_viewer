@@ -17,7 +17,8 @@ sub init {
 
         my $db_conf = $ConfigH->{$gm};
         my $exception_cb = sub { 
-            HTTP::Exception->throw(500, status_message => "'$db_name' DB error") 
+            my $err = shift;
+            HTTP::Exception->throw(500, status_message => "'$db_name' DB error ($err)") 
         };
         $db_poll{$db_name} = db->new(
             %{ $db_conf },
