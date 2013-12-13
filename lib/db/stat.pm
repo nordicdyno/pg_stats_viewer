@@ -83,32 +83,45 @@ sub _stats_query {
         }
     }
 
-    my $query = "FROM pg_stat_statements";
+    my $query = " FROM pg_stat_statements";
     $query .= " WHERE " . join(" AND ", @where) if @where;
     return $query;
 }
 
+sub fields_cfg {
+    my @f = (
+        qw( userid dbid query ),
+        'avgtime',
+        'calls',
+        'total_time',
+        'rows',
+        'shared_blks_hit',
+        'shared_blks_read',
+        'shared_blks_dirtied',
+        'shared_blks_written',
+        'local_blks_hit',
+        'local_blks_read',
+        'local_blks_dirtied',
+        'local_blks_written',
+        'temp_blks_read',
+        'temp_blks_written',
+        'blk_read_time',
+        'blk_write_time'
+    );
+    my @ret;
+    for (@f) {
+        my $conf = { name => $_ };
+        if ($_ eq 'avgtime') {
+            $conf->{select} = "COALESCE(total_time / NULLIF(calls,0), 0)";
+        }
+        push @ret, $conf;
+    }
+    return @ret;
+}
+
 sub get_stats_fields {
-    return [
-      'userid',
-      'dbid',
-      'query',
-      'calls',
-      'total_time',
-      'rows',
-      'shared_blks_hit',
-      'shared_blks_read',
-      'shared_blks_dirtied',
-      'shared_blks_written',
-      'local_blks_hit',
-      'local_blks_read',
-      'local_blks_dirtied',
-      'local_blks_written',
-      'temp_blks_read',
-      'temp_blks_written',
-      'blk_read_time',
-      'blk_write_time'
-    ];
+    my $f = [ map { $_->{name} } fields_cfg() ];
+    return $f;
 }
 
 sub get_stats {
@@ -132,10 +145,13 @@ sub get_stats {
         $offset = ($page - 1) * $limit;
     }
 
-    my $count_query  = "SELECT count(1) " . _stats_query(%q_opt);
-    my $select_query = "SELECT " 
-        . join(", ", @{ get_stats_fields() }) . " "
-        . _stats_query(%q_opt);
+    my $count_query  = "SELECT count(1)" . _stats_query(%q_opt);
+    my @fields;
+    for (fields_cfg()) {
+        my $chunk = $_->{select} ? "$_->{select} AS $_->{name}" : $_->{name};
+        push @fields, $chunk;
+    }
+    my $select_query = "SELECT " . join(", ", @fields) . _stats_query(%q_opt);
     if ($opt{order_by} && @{$opt{order_by}}) { 
         $select_query .= " ORDER BY " 
             . join(",", map { 

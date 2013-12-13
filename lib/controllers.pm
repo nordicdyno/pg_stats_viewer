@@ -139,7 +139,8 @@ sub stat {
     my %usr = map { $_->{oid} => $_->{rolname} } @{ $db_stat->users() };
     my %db  = map { $_->{oid} => $_->{datname} } @{ $db_stat->databases() };
     for my $item (@{ $ret_stat->{data} }) {
-        $item->{total_time} = sprintf "%.2f", $item->{total_time};
+        $item->{avgtime}    = round_float($item->{avgtime}, 5);
+        $item->{total_time} = round_float($item->{total_time}, 2);
         $item->{_extra} = qq{<img src="/images/details_open.png" width="20" height="20">};
         $item->{userid} = $usr{ $item->{userid} } // $item->{userid};
         $item->{dbid}   = $db{ $item->{dbid} } // $item->{dbid};
