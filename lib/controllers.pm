@@ -158,4 +158,16 @@ sub stat {
     };
 }
 
+sub round_float {
+    my ($num, $places) = @_;
+    return pretty_num_tail(sprintf("%.${places}f", $num));
+}
+
+sub pretty_num_tail {
+    my $num = shift;
+    $num=~ s/0+$//;
+    $num =~ s/\.$//;
+    return $num;
+}
+
 1;
