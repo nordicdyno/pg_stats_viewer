@@ -2,7 +2,7 @@
 <html>
   <head>
     <title>pg_web_stats</title>
-    <meta charset='utf-8'> 
+    <meta charset='utf-8'>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- Bootstrap v3 -->
     <!-- Bootstrap core CSS -->
@@ -10,14 +10,14 @@
     <!-- Bootstrap theme -->
     <link href="http://getbootstrap.com/dist/css/bootstrap-theme.min.css" rel="stylesheet">
 
-<!-- DataTables CSS 
+<!-- DataTables CSS
 -->
 <link rel="stylesheet" type="text/css" href="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/css/jquery.dataTables.css">
  
-<!-- jQuery 
+<!-- jQuery
 -->
 <script type="text/javascript" charset="utf8" src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.10.2.min.js"></script>
-<!-- DataTables 
+<!-- DataTables
 -->
 <script type="text/javascript" charset="utf8" src="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/jquery.dataTables.min.js"></script>
 <style>
@@ -46,7 +46,7 @@
             <li class="dropdown">
 : if $session {
 <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-    <: $session.user.name :> 
+    <: $session.user.name :>
     <b class="caret"></b></a>
 <ul class="dropdown-menu"><li><a href="/oauth2/<: $session.provider :>/exit">Logout</a></li></ul>
 : }
