@@ -161,12 +161,6 @@ sub get_stats {
     }
     $select_query .= " LIMIT $limit OFFSET $offset";
 
-    my $ffields = join (', ',
-        map { "slct.$_" }
-        grep {!/userid|dbid/}
-        @{ get_stats_fields() }
-    );
-
     my $dbh = $self->{db}->get_dbh();
     my @counts = $dbh->selectrow_array($count_query);
 
