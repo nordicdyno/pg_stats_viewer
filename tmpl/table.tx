@@ -104,7 +104,7 @@ $(document).ready(function() {
 
     function toggleView() {
         // FIXME: quick hack
-        var tail = [9,10,11,12,13,14,15,16,17,18,19];
+        var tail = [11,12,13,14,15,16,17,18,19,20,21];
         fnShowHideList(tail);
     }
 

@@ -96,8 +96,10 @@ sub fields_cfg {
         'calls',
         'total_time',
         'rows',
+        'rows_per_call',
         'shared_blks_hit',
         'shared_blks_read',
+        'shared_blks_hit_percent',
         'shared_blks_dirtied',
         'shared_blks_written',
         'local_blks_hit',
@@ -114,6 +116,12 @@ sub fields_cfg {
         my $conf = { name => $_ };
         if ($_ eq 'avgtime') {
             $conf->{select} = "COALESCE(total_time / NULLIF(calls,0), 0)";
+        }
+        if ($_ eq 'rows_per_call') {
+            $conf->{select} = "COALESCE(rows / NULLIF(calls,0), 0)";
+        }
+        if ($_ eq 'shared_blks_hit_percent') {
+            $conf->{select} = "100.0*shared_blks_hit / nullif(shared_blks_hit + shared_blks_read, 0)";
         }
         push @ret, $conf;
     }
