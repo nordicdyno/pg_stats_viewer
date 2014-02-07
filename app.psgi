@@ -3,6 +3,9 @@
 use strict;
 use warnings;
 use feature 'say';
+BEGIN {
+   if (-d "local/lib/perl5") { use lib "local/lib/perl5" }
+};
 use Plack::Request;
 use Plack::Builder;
 use Router::Simple;
