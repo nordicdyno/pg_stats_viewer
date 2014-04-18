@@ -95,7 +95,7 @@ for my $gr_m (@m) {
 
 # Extra middlewares
 # Auth & sessions
-OAUTH_INIT: { 
+OAUTH_INIT: {
     my $provider = $ConfigH->{global}{oauth};
     last OAUTH_INIT unless $provider;
     my $conf = $ConfigH->{"oauth $provider"};
@@ -107,7 +107,7 @@ OAUTH_INIT: {
     $builder->add_middleware('Session', %session_opt);
 
     my $users = users->new(users::parse_users($conf->{'valid_users'}));
-    my %oauth_opt = map { $_ => $conf->{$_} } 
+    my %oauth_opt = map { $_ => $conf->{$_} }
         qw(provider client_id client_secret redirect_uri);
     $oauth_opt{valid_users} = $users;
     $oauth_opt{pages_templator} = \&oauth_tmpl;
@@ -120,7 +120,7 @@ sub oauth_tmpl {
     my $tx = tmpl::init();
     my ($page, $ctx) = @_;
     $ctx->{test} = ":D"; # for debug
-    $tx->render($page.".tx", $ctx) 
+    $tx->render($page.".tx", $ctx)
 }
 
 sub parse_middleware_value {
