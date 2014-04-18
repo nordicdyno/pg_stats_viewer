@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html>
+<head><title>Login page</title></head>
+<body>
+<div style="text-align: center; font-size: 80%; font-family: Arial, sans-serif">
+    <p><a href="<: $login_url :>">Log in</a> with your <: $provider_name :> account</p>
+    <p style="margin-top: 3em">
+    For access, contact with <a href="<: $admin_email :>">administrator</a>.
+    </p>
+<: $test :>
+</div>
+</body>
+</html>

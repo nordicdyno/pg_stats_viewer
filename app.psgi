@@ -110,10 +110,18 @@ OAUTH_INIT: {
     my %oauth_opt = map { $_ => $conf->{$_} } 
         qw(provider client_id client_secret redirect_uri);
     $oauth_opt{valid_users} = $users;
+    $oauth_opt{pages_templator} = \&oauth_tmpl;
     $builder->add_middleware('OAuth2', %oauth_opt);
 }
 
 return $builder->wrap($app);
+
+sub oauth_tmpl {
+    my $tx = tmpl::init();
+    my ($page, $ctx) = @_;
+    $ctx->{test} = ":D"; # for debug
+    $tx->render($page.".tx", $ctx) 
+}
 
 sub parse_middleware_value {
     my $val = shift;

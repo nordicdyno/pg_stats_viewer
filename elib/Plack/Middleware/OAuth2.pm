@@ -14,9 +14,35 @@ use Plack::Util::Accessor qw(
     redirect_uri
     provider
     valid_users
+    
+    pages_templator
 
     client
 );
+
+sub default_pages_templator {
+        my ($page, $ctx) = @_;
+        my $html = "";
+        if ($page eq 'login') {
+            $html = <<"LOGIN";
+<html>
+<head><title>Login page</title></head>
+<body>
+<div style="text-align: center; font-size: 80%; font-family: Arial, sans-serif">
+    <p><a href="$ctx->{login_url}">Log in</a> with your $ctx->{provider_name} account</p>
+    <p style="margin-top: 3em">
+    For access, contact with <a href="">administrator</a>.
+    </p>
+</div>
+</body>
+</html>
+LOGIN
+        }
+        elsif ($page eq 'login_failed') {
+            $page = "<h3>Authorization required! $ctx->{login_id} isnt allowed! Please contact us by email: $ctx->{contact_email}</h3> <br/> <a href="/">Sign in</a>";
+        }
+        return $page;
+}
 
 # call only once when run app
 sub prepare_app {
@@ -121,19 +147,8 @@ sub oauth_page {
     my $provider = $self->provider;
     my $url = $self->client->make_auth_query(scope => $CFG{$provider}{scope});
 
-    my $html = <<"LOGIN";
-<html>
-<head><title>Login page</title></head>
-<body>
-<div style="text-align: center; font-size: 80%; font-family: Arial, sans-serif">
-    <p><a href="$url">Log in</a> with your $provider account</p>
-    <p style="margin-top: 3em">
-    For access, contact with <a href="">administrator</a>.
-    </p>
-</div>
-</body>
-</html>
-LOGIN
+    my $templator = $self->{pages_templator} // \&default_pages_templator;
+    my $html = $templator->('login', { login_url => $url, provider_name => $provider});
 
     return [200, [ 'Content-Type' => 'text/html' ], [ $html ] ];
 }
@@ -188,11 +203,11 @@ sub oauth_callback {
         return $res->finalize;
     }
 
-    my $contact_email = "-";
+    my $email = "-";
+    my $templator = $self->{pages_templator} // \&default_pages_templator;
+    my $html = $templator->('login_failed', { login_id => $id, contact_email => $email});
     return [
-        401, 
-        [ 'Content-Type' => 'text/html' ], 
-        [ '<h3>Authorization required! '.$id.qq{ isnt allowed! Please contact us by email: $contact_email</h3> <br/> <a href="/">Sign in</a>} ] 
+        401, [ 'Content-Type' => 'text/html' ], [ $html ],
     ];
 }
 

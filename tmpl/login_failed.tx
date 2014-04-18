@@ -1,0 +1,2 @@
+<h3>Authorization required! <: $login_id :> isnt allowed! Please contact us by email: <: $contact_email :></h3> <br/> <a href="/">Sign in</a>
+
