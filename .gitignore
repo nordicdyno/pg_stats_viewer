@@ -1,2 +1,4 @@
+touch-reload
+conf/config.ini
 local/
 .DS_Store
