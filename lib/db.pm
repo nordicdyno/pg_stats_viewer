@@ -45,8 +45,8 @@ sub connect_db {
 sub _generate_dsn {
     my %args = @_;
     my @dsn = ("dbi:Pg:dbname=" . $args{name});
-    push @dsn, "host=" . $args{host} ;
-    push @dsn, "port=" . $args{port} ;
+    push @dsn, "host=" . $args{host} if $args{host};
+    push @dsn, "port=" . $args{port} if $args{port};
 
     return join(';', @dsn);
 }
