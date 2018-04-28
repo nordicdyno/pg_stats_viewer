@@ -4,60 +4,54 @@
     <title>pg_web_stats</title>
     <meta charset='utf-8'>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- jQuery -->
-<script type="text/javascript" charset="utf8" src="//ajax.aspnetcdn.com/ajax/jQuery/jquery-1.10.2.min.js"></script>
-    <!-- Bootstrap v3 -->
-    <!-- Bootstrap core CSS -->
-<link href="//netdna.bootstrapcdn.com/bootstrap/3.1.0/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Bootstrap theme -->
-<link href=""//netdna.bootstrapcdn.com/bootstrap/3.1.0/css/bootstrap-theme.min.css" rel="stylesheet">
-    <!-- Latest compiled and minified JavaScript -->
-<script src="//netdna.bootstrapcdn.com/bootstrap/3.1.0/js/bootstrap.min.js"></script>
-    <!-- DataTables -->
 
-<!-- DataTables CSS -->
-<link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.0-beta.1/css/jquery.dataTables.css">
- 
-<!-- DataTables -->
-<script type="text/javascript" charset="utf8" src="//cdn.datatables.net/1.10.0-beta.1/js/jquery.dataTables.js"></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js" type="text/javascript"></script>
+    <script type="text/javascript" charset="utf8" src="//cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 
-<style>
-.container {
-  padding-left: 10px;
-  margin-left: 25px;
-}
-</style>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/open-iconic/1.1.1/font/css/open-iconic-bootstrap.css">
+
+    <style>
+      .dataTables_filter { display: none; }
+    </style>
 
   </head>
 
   <body>
-    <div class="navbar navbar-inverse">
-      <div class="container">
-        <div class="navbar-header">
-          <a class="navbar-brand" href="/">pg_stat_statements viewer</a>
-        </div>
-        <div class="navbar-collapse collapse">
-          <ul class="nav navbar-nav">
+    <nav class="navbar navbar-expand-md navbar-dark bg-dark">
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarMainNav" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarMainNav">
+        <a class="navbar-brand" href="/">pgstat</a>
+        <ul class="navbar-nav">
 : for $db_list -> $db {
-            <li <: $db.class | raw :>><a href="<: $db.url :>"><: $db.name :></a></li>
+          <li class="nav-item <: $db.class | raw :>" >
+            <a class="nav-link" href="<: $db.url :>"><: $db.name :></a>
+          </li>
 : }
-          </ul>
-          <ul class="nav navbar-nav navbar-right">
-            <li><img src="<: $session.user.photo.link :>"></li>
-            <li class="dropdown">
-: if $session {
-<a href="#" class="dropdown-toggle" data-toggle="dropdown">
-    <: $session.user.name :>
-    <b class="caret"></b></a>
-<ul class="dropdown-menu"><li><a href="/oauth2/<: $session.provider :>/exit">Logout</a></li></ul>
-: }
-            </li>
-          </ul>
-        </div><!--/.nav-collapse -->
+        </ul>
       </div>
-    </div>
 
-    <div class="container">
+: if $session {
+      <ul class="navbar-nav ml-auto">
+        <li><img src="<: $session.user.photo.link :>"></li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <: $session.user.name :>
+          </a>
+          <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+            <a href="/oauth2/<: $session.provider :>/exit" class="dropdown-item">Logout</a>
+          </div>
+        </li>
+      </ul>
+: }
+    </nav>
+
+    <div class="container-fluid">
 : include "table.tx"
     </div>
 

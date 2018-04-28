@@ -1,40 +1,55 @@
-<div class="form-horizontal">
-<form method="GET" action="/" class="form-inline">
-<button type="button" class="btn btn-default btn-sm" onclick="toggleView();">
-    <span class="glyphicon glyphicon-filterToggle">wide</span>
-</button>&nbsp;&nbsp;&nbsp;&nbsp;
-  Filter by user:
-  <select name="userid">
-    <option value=""></option>
-:   for $users -> $user {
-      <option value="<: $user.oid :>" <: $params.userid == $user.oid ? "selected" : "" :>><:= $user.rolname :></option>
-: }
-  </select>
-  and by db:
-  <select name="dbid">
-    <option value=""></option>
-:   for $dbs -> $db {
-      <option value="<: $db.oid :>" <: $params.dbid == $db.oid ? "selected" : "" :>><: $db.datname :></option>
-:   }
-  </select>
+<div class="row"><div class="col-sm">
+  <form class="form-inline py-3" method="GET">
+    <div class="input-group">
+      <div class="input-group-prepend">
+        <label class="input-group-text">
+          <span class="oi oi-person"></span>
+        </label>
+      </div>
+      <select name="userid" class="custom-select">
+        <option value="">Choose user...</option>
+:       for $users -> $user {
+          <option value="<: $user.oid :>" <: $params.userid == $user.oid ? "selected" : "" :> >
+            <:= $user.rolname :>
+          </option>
+:       }
+      </select>
+    </div>
 
-  <input type="submit" name="submit" class="btn">
-</form>
+    <div class="input-group mx-3">
+      <div class="input-group-prepend">
+        <label class="input-group-text">
+          <span class="oi oi-box"></span>
+        </label>
+      </div>
+      <select name="dbid" class="custom-select">
+        <option value="">Choose db...</option>
+:       for $dbs -> $db {
+          <option value="<: $db.oid :>" <: $params.dbid == $db.oid ? "selected" : "" :>>
+            <: $db.datname :>
+          </option>
+:       }
+      </select>
+    </div>
 
-</div>
+    <button type="submit" class="btn btn-primary">Submit</button>
 
-<div id="paginate_enabled_next"></div>
-<table id="example">
-<thead>
-</thead>
-<tbody></tbody>
-<tfoot>
-</tfoot>
-</table>
+    <input class="form-control ml-auto" type="text" placeholder="Search..." onkeyup="filterChanged(this.value)">
+  </form>
+</div></div>
+
+<div class="row mb-5"><div class="col-sm">
+  <table id="example" class="display">
+  <thead></thead>
+  <tbody></tbody>
+  <tfoot></tfoot>
+  </table>
+</div></div>
 
 <script type="text/javascript" charset="utf-8">
-var oTable;
-function fnFormatDetails ( nTr ) {
+  var tableSelector = '#example';
+  function fnFormatDetails ( nTr ) {
+    var oTable = $(tableSelector).dataTable();
     var aData = oTable.fnGetData(nTr);
     var sOut = '';
     sOut += '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;" width="100%">';
@@ -42,18 +57,17 @@ function fnFormatDetails ( nTr ) {
     sOut += '</table>';
 
     return sOut;
-}
+  }
 
-var queryRenderFn = function(data, type, full) {
+  var queryRenderFn = function(data, type, full) {
     var ret = data;
-    if (data.length > 250) {
-        ret = data.substr(0, 250) + " <b>...</b>";
+    if (data.length > 125) {
+        ret = data.substr(0, 125) + " <b>...</b>";
     }
     return ret;
-}
+  }
 
-$(document).ready(function() {
-    console.log("start");
+  $(document).ready(function() {
     var aoColumns = <: $aoColumnsJSON | raw :>;
     for (var key in aoColumns) {
         var obj = aoColumns[key];
@@ -63,10 +77,9 @@ $(document).ready(function() {
     }
 
     var imgClicks = function() {
-        var imgs = $('#example tbody tr td img')
-        //console.log(imgs)
+        var imgs = $(tableSelector +' tbody tr td img')
+        var oTable = $(tableSelector).dataTable();
         imgs.on('click', function(event){
-            //console.log("on click");
             var nTr = $(this).parents('tr')[0];
             if ( oTable.fnIsOpen(nTr) ) {
                 this.src = "/images/details_open.png";
@@ -79,47 +92,52 @@ $(document).ready(function() {
         } );
     };
 
-    oTable = $('#example').dataTable( {
-        "fnDrawCallback": imgClicks,
-        "bProcessing": true,
-        "bServerSide": true,
-        "sAjaxSource": "<: $db_url :>stat.json<: $filter :>",
-        //"bAutoWidth": false,
-        // "sAjaxDataProp": "aaData",
-        //"sScrollX": '100%',
-        "bScrollCollapse": true,
-        // "bDestroy": true,
-        //"aoColumnsDefs": [ { "bSortable": false, "aTargets": [ 0 ] }, ],
-        "aaSorting": [
+    $(tableSelector).DataTable( {
+        "drawCallback": imgClicks,
+
+        "paginationType": "full_numbers",
+        "pageLength": 100,
+        "lengthChange": false,
+
+        "processing": true,
+        "serverSide": true,
+        "ajaxSource": "<: $db_url :>stat.json<: $filter :>",
+
+        "scrollCollapse": true,
+        "sorting": [
             ['5', /* total_time */ 'desc'] // default sorting
         ],
-        "aoColumns": aoColumns,
-        "sPaginationType": "full_numbers",
-        "sDom": '<"top"lpf>rt<"bottom"lp><"clear">'
+        "columns": aoColumns,
+        language: {
+          search: "_INPUT_",
+        },
     });
 
     toggleView();
 
-});
+  });
 
-    function toggleView() {
-        // FIXME: quick hack
-        var tail = [11,12,13,14,15,16,17,18,19,20,21];
-        fnShowHideList(tail);
-    }
+  function toggleView() {
+      // FIXME: quick hack
+      var tail = [11,12,13,14,15,16,17,18,19,20,21];
+      fnShowHideList(tail);
+  }
 
-    function fnShowHideList(list) {
-        for (var i = 0; i < list.length; i++) {
-            fnShowHide(list[i]);
-        }
-    }
-    function fnShowHide(iCol) {
-        /* Get the DataTables object again - this is not a recreation, just a get of the object */
-        var oTable = $('#example').dataTable();
+  function fnShowHideList(list) {
+      for (var i = 0; i < list.length; i++) {
+          fnShowHide(list[i]);
+      }
+  }
+  function fnShowHide(iCol) {
+      /* Get the DataTables object again - this is not a recreation, just a get of the object */
+      var oTable = $('#example').dataTable();
 
-        var bVis = oTable.fnSettings().aoColumns[iCol].bVisible;
-        oTable.fnSetColumnVis( iCol, bVis ? false : true );
-    }
+      var bVis = oTable.fnSettings().aoColumns[iCol].bVisible;
+      oTable.fnSetColumnVis( iCol, bVis ? false : true );
+  }
+
+  function filterChanged(v) {
+    $(tableSelector).DataTable().search(v).draw();
+  }
 
 </script>
-

@@ -81,7 +81,7 @@ sub index {
         my %db_out = (url => '/', name => $db); # TODO : move to config ?
         if ($db ne 'master') { $db_out{url} = '/' . $db . '/'; }
         if ($db eq $db_name) {
-            $db_out{class} = 'class="active"';
+            $db_out{class} = 'active';
             $db_url = $db_out{url};
         }
         push @db_list, \%db_out;
