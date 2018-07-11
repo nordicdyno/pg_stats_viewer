@@ -141,6 +141,9 @@ sub stat {
     for my $item (@{ $ret_stat->{data} }) {
         $item->{avgtime}    = round_float($item->{avgtime}, 5);
         $item->{total_time} = round_float($item->{total_time}, 2);
+        if ($item->{shared_blks_hit_percent}) {
+            $item->{shared_blks_hit_percent} = round_float($item->{shared_blks_hit_percent}, 2);
+        }
         $item->{_extra} = qq{<img src="/images/details_open.png" width="20" height="20">};
         $item->{userid} = $usr{ $item->{userid} } // $item->{userid};
         $item->{dbid}   = $db{ $item->{dbid} } // $item->{dbid};
