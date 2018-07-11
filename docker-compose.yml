@@ -1,0 +1,13 @@
+version: "3"
+
+services:
+  viewer:
+    container_name: pg_stats_viewer
+    restart: always
+    image: nordicdyno/pg_stats_viewer:latest
+    ports:
+      - 9000:9000
+    volumes:
+      - ./conf/:/root/conf/:ro
+    # environment:
+    #   - CONFIG_DIR=./conf
