@@ -9,3 +9,4 @@ ADD cpanfile /root/cpanfile
 RUN cpm install --test --verbose -g && rm -rf ~/.cpanm
 ADD . /app
 WORKDIR /app
+CMD command starman --port 9000
