@@ -22,7 +22,7 @@ sub init {
             $whole_ini = read_ini($type_ini_f, -import => $main_ini);
         }
     }
-    $Config = $whole_ini; 
+    $Config = $whole_ini;
     $ConfigH = $Config->{v};
 =pod
     for my $sec ($Config->Sections()) {

@@ -39,7 +39,7 @@ host = __INSERT DB HOST HERE__
 port = __INSERT DB PORT HERE__
 user = postgres
 password =
-    
+
 #[db slave1]
 #name = __INSERT DB NAME HERE__
 #host = __INSERT DB HOST HERE__

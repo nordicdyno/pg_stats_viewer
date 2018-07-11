@@ -6,7 +6,7 @@ use HTTP::Exception;
 use db;
 use config qw($Config $ConfigH);
 
-my %db_poll; 
+my %db_poll;
 my @db_links;
 
 sub init {
@@ -16,9 +16,9 @@ sub init {
         push @db_links, $db_name;
 
         my $db_conf = $ConfigH->{$gm};
-        my $exception_cb = sub { 
+        my $exception_cb = sub {
             my $err = shift;
-            HTTP::Exception->throw(500, status_message => "'$db_name' DB error ($err)") 
+            HTTP::Exception->throw(500, status_message => "'$db_name' DB error ($err)")
         };
         $db_poll{$db_name} = db->new(
             %{ $db_conf },
@@ -161,9 +161,9 @@ sub get_stats {
         push @fields, $chunk;
     }
     my $select_query = "SELECT " . join(", ", @fields) . _stats_query(%q_opt);
-    if ($opt{order_by} && @{$opt{order_by}}) { 
-        $select_query .= " ORDER BY " 
-            . join(",", map { 
+    if ($opt{order_by} && @{$opt{order_by}}) {
+        $select_query .= " ORDER BY "
+            . join(",", map {
                 $_->{name} . (lc $_->{direction} eq 'desc' ? ' desc' : '');
             } @{$opt{order_by}});
     }

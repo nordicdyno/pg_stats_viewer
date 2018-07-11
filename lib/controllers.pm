@@ -11,7 +11,7 @@ use tmpl;
 use db::stat;
 use constant COLUMNS_OFFSET => 1;
 
-my %aliases = 
+my %aliases =
     map {
         my $key = $_;
         my $value = join('', map { substr($_, 0, 1) } split("_", $key) );
@@ -27,21 +27,21 @@ my %aliases =
 
 sub setup_ao_columns {
     my $aoColumns = [
-        { "mData"       => "_extra", 
+        { "mData"       => "_extra",
           "sClass"      => "left",
           "bSortable"   => JSON::XS::false,
         },
     ];
     my $fields = db::stat::get_stats_fields();
     for my $f (@$fields) {
-        my %extra_opt = ( $f eq 'query' 
+        my %extra_opt = ( $f eq 'query'
             ? ( sWidth => "50%",
                 mRender => 'queryRenderFn', # ?
                 sClass  => 'left',
-            ) 
+            )
             : (sClass => "right")
         );
-        push @{ $aoColumns }, { 
+        push @{ $aoColumns }, {
             sTitle => $aliases{$f} // $f,
             mData  => $f,
             asSorting => ["desc", "asc"],
@@ -60,9 +60,9 @@ sub index {
     if ($params->{dbid} or $params->{userid}) {
         $filter = "?dbid=$params->{dbid}&userid=$params->{userid}";
     }
-    my $db_name = $route->{db_name}; 
+    my $db_name = $route->{db_name};
     my $db_stat = db::stat->new($db_name);
-    
+
     #print STDERR "session => " . Dumper($session);
 # Prepare data
     my $data = {
@@ -116,7 +116,7 @@ sub stat {
         };
     }
 
-    my @search; 
+    my @search;
     if (my $search_raw = $params->{sSearch}) {
         for (split(/\s+/, $search_raw)) {
             next unless /^(!)?(.+)/;

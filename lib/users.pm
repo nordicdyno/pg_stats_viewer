@@ -2,7 +2,7 @@ package users;
 use strict;
 use warnings;
 
-sub new { 
+sub new {
     my $class = shift;
     my %users_table = @_;
     return bless \%users_table, $class;
@@ -18,7 +18,7 @@ sub get {
 sub parse_users {
     my $str = shift;
     my %users = map {
-        s/\s+//g; 
+        s/\s+//g;
         $_ => 1
     } split(',', $str);
     return %users;
