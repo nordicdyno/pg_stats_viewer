@@ -8,6 +8,4 @@ services:
     ports:
       - 9000:9000
     volumes:
-      - ./conf/:/root/conf/:ro
-    # environment:
-    #   - CONFIG_DIR=./conf
+      - ./conf/:/app/conf/:ro
