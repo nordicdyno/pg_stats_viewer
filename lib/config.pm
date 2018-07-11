@@ -10,7 +10,7 @@ our $Config  = {};
 our $ConfigH = {};
 our @EXPORT_OK = qw($Config $ConfigH);
 
-my $Dir = 'conf';
+my $Dir = $ENV{"CONFIG_DIR"} // 'conf';
 sub init {
     my $type = shift;
     my $main_ini_f = join('/', $Dir, "config.ini");
