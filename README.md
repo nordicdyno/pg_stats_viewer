@@ -2,8 +2,8 @@
 
 webview for Postgres [pg_stat_statements](https://www.postgresql.org/docs/current/static/pgstatstatements.html) statisics.
 
-[![Docker build](https://img.shields.io/docker/automated/nordicdyno/pg_stats_viewer.svg)][hub]
-[![Docker Pulls](https://img.shields.io/docker/pulls/nordicdyno/pg_stats_viewer.svg)][hub]
+[![Docker Build](https://img.shields.io/docker/automated/nordicdyno/pg_stats_viewer.svg)](https://hub.docker.com/r/nordicdyno/pg_stats_viewer/)
+[![Docker Pulls](https://img.shields.io/docker/pulls/nordicdyno/pg_stats_viewer.svg)]
 
 ## DESCRIPTION
 
@@ -85,5 +85,3 @@ Run with Starman:
 * don't require permission to `pg_authid` (abilty to run as unpriveleged postgres user)
 * add instruction how to connect on localhost from docker on Mac
 * add /diag endpoint
-
-[hub]: https://hub.docker.com/r/nordicdyno/pg_stats_viewer/
